@@ -42,7 +42,7 @@ def untargz(file, folder):
         file.close()
 
 def download_java():
-    if "posix" in os.name:
+    if "posix" in os.name and not sys.platform == "darwin":
         if "arm" in str(cpu()).lower():
             download("https://download.oracle.com/java/17/archive/jdk-17.0.11_linux-aarch64_bin.tar.gz", "java.tar.gz")
         else:
@@ -52,7 +52,7 @@ def download_java():
         download("https://download.oracle.com/java/17/archive/jdk-17.0.11_windows-x64_bin.zip", "java.zip")
         unzip("java.zip", "java")
     elif sys.platform == "darwin":
-        if "arm" in str(cpu()).lower():
+        if "arm" in str(platform.processor()).lower():
             download("https://download.oracle.com/java/17/archive/jdk-17.0.11_macos-aarch64_bin.tar.gz", "java.tar.gz")
         else:
             download("https://download.oracle.com/java/17/archive/jdk-17.0.11_macos-x64_bin.tar.gz", "java.tar.gz")
@@ -95,7 +95,7 @@ if True:
         download_java()
         my_env = os.environ.copy()
         print(os.path.abspath(os.path.join("java", "jdk-17.0.11")))
-        my_env["JAVA_HOME"] = os.path.abspath(os.path.join("java", "jdk-17.0.11"))
+        my_env["JAVA_HOME"] = os.path.abspath(os.path.join(os.path.expanduser("java"), [d for d in os.listdir(os.path.expanduser("java")) if os.path.isdir(os.path.join(os.path.expanduser("java"), d))][0], "Contents", "Home")) if "posix" in os.name and sys.platform == "darwin" and platform.processor() == "arm" else os.path.abspath(os.path.join(os.path.expanduser("java"), [d for d in os.listdir(os.path.expanduser("java")) if os.path.isdir(os.path.join(os.path.expanduser("java"), d))][0]))
         my_env["M2_HOME"] = os.path.abspath(os.path.join("maven363", "apache-maven-3.6.3"))
         my_env["M2"] = os.path.abspath(os.path.join("maven363", "apache-maven-3.6.3", "bin"))
         my_env["PATH"] = my_env["M2"]+os.pathsep+os.environ["PATH"]
