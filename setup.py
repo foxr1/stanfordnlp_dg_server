@@ -43,7 +43,7 @@ def untargz(file, folder):
 
 def download_java():
     if "posix" in os.name and not sys.platform == "darwin":
-        if "arm" in str(cpu()).lower():
+        if "arm" in str(platform.processor()).lower() or "aarch" in str(platform.processor()).lower():
             download("https://download.oracle.com/java/17/archive/jdk-17.0.11_linux-aarch64_bin.tar.gz", "java.tar.gz")
         else:
             download("https://download.oracle.com/java/17/archive/jdk-17.0.11_linux-x64_bin.tar.gz", "java.tar.gz")
