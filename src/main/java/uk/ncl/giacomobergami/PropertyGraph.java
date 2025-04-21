@@ -21,6 +21,10 @@ public class PropertyGraph {
     private HashMap<Integer, Vertex> vertices;
     private HashMap<Pair<Integer, Integer>, Vertex> edges;
 
+    public int nVertices() {
+        return vertices.size();
+    }
+
     public static void reset() {
         incrementalVertexId.set(0);
         incrementalEdgeID.set(0);

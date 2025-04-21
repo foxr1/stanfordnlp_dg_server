@@ -3,6 +3,8 @@ package uk.ncl.giacomobergami;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -54,7 +56,9 @@ public class GraphRequest extends FormDataHandler {
 
     public static void extracted(Date startDate, Date endDate, StringBuilder sb, List<String> y) {
         rl.lock();
-        try {
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("java_graph_generation_benchmark_nvertices_vs_milliseconds.csv", true))) {
+
             StanfordGraph.reset();
             PropertyGraph.reset();
             //        List<GradoopGraph.Vertex> vs = new ArrayList<>();
@@ -63,18 +67,28 @@ public class GraphRequest extends FormDataHandler {
             for (Iterator<String> iterator = y.iterator(); iterator.hasNext(); ) {
                 String part = iterator.next();
 //            var result =
-                StanfordGraph
-                        .parse(part, startDate, endDate)
-                        .asYAMLObjectCollection(sb);
+                long startTime = System.currentTimeMillis();
+                var g = StanfordGraph
+                        .parse(part, startDate, endDate);
+                long endTime = System.currentTimeMillis();
+                var length = g.nVertices();
+                writer.write(length+","+(endTime-startTime));
+                writer.newLine();
+                g.asYAMLObjectCollection(sb);
+
                 if (iterator.hasNext())
                     sb.append("~~\n");
 //            vs.addAll(result.vertexList);
 //            es.addAll(result.edgeList);
 //            gs.add(result.header);
             }
+        }
+        catch (IOException ex) {
+            ex.printStackTrace();
         } finally {
             rl.unlock();
         }
+
 
     }
 }

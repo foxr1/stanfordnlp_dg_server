@@ -81,7 +81,13 @@ public class TimeRequest extends FormDataHandler {
                     var annot = cem.coreMap().get(TimeAnnotations.TimexAnnotation.class);
                     if (annot != null) {
                         tz.type = annot.timexType();
-                        tz.text = new ResolvedTime(annot.value(), cem.text()).toHierarchy().get(0);
+                        var rt = new ResolvedTime(annot.value(), cem.text());
+                        var hier = rt.toHierarchy();
+                        if (hier.isEmpty()) {
+                            tz.text = cem.text();
+                        } else {
+                            tz.text = hier.get(0);
+                        }
                         try {
                             tz.startDate = annot.getRange().first.getTime();
                         } catch (Exception e) {
