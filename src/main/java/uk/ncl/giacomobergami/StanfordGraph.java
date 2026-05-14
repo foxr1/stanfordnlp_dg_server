@@ -117,6 +117,7 @@ public class StanfordGraph {
         vertexIndex.update("pos", index+"");
         vertexIndex.update("begin", begin+"");
         vertexIndex.update("end", end+"");
+        vertexIndex.update("xpos", v.tag());
 
         for (SemanticGraphEdge e :
                 semanticGraph.outgoingEdgeList(v)) {
